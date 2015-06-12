@@ -1,6 +1,5 @@
 package com.mooreds.camel.security;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
