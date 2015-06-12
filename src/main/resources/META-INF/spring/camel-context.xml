@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+     <!-- Jetty Security handling -->
+	<bean id="constraint" class="org.eclipse.jetty.util.security.Constraint">
+    	<property name="name" value="BASIC"/>
+    	<property name="roles" value="rolename"/>
+    	<property name="authenticate" value="true"/>
+	</bean>
+ 	
+	<bean id="constraintMapping" class="org.eclipse.jetty.security.ConstraintMapping">
+    	<property name="constraint" ref="constraint"/>
+    	<property name="pathSpec" value="/*"/>
+	</bean>
+ 	
+	<bean id="securityHandler" class="org.eclipse.jetty.security.ConstraintSecurityHandler">
+    	<property name="loginService">
+        	<bean class="com.mooreds.camel.security.HardcodedLoginService" />
+    	</property>
+    	<property name="authenticator">
+        	<bean class="org.eclipse.jetty.security.authentication.BasicAuthenticator"/>
+    	</property>
+    	<property name="constraintMappings">
+        	<list>
+            	<ref bean="constraintMapping"/>
+        	</list>
+    	</property>
+	</bean>
+ 
+    <camelContext id="RestAPI" xmlns="http://camel.apache.org/schema/spring">
+		
+		<restConfiguration component="jetty" port="{{sys:PORT}}"> 
+			<endpointProperty key="handlers" value="securityHandler"></endpointProperty>
+		</restConfiguration>
+		
+    
+    <!-- map from rest interface to rabbit bus -->
+    <!-- consider breaking these out to sep xml files: http://camel.apache.org/how-do-i-import-rests-from-other-xml-files.html  -->
+	<rest path="/hello" consumes="application/json;vnd.com.katasi.json+v1" produces="application/json;vnd.com.katasi.json+v1">
+		<get uri="/">
+			<to uri="direct:hello" />
+		</get>
+	</rest>
+
+    </camelContext>
+
+</beans>

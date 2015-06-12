@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+<property name="defaultPattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%file:%line] - %msg%n" />
+
+     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+	<charset>UTF-8</charset>
+	<pattern>${defaultPattern}</pattern>
+	</encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+
+</configuration>
